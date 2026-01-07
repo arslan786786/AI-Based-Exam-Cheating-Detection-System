@@ -1,0 +1,38 @@
+# Web Framework
+Flask==3.0.0
+Flask-CORS==4.0.0
+Flask-SocketIO==5.3.5
+Flask-SQLAlchemy==3.1.1
+Flask-Migrate==4.0.5
+Flask-JWT-Extended==4.6.0
+
+# Computer Vision & AI
+opencv-python==4.9.0.80
+mediapipe==0.10.9
+numpy==1.26.3
+pillow==10.2.0
+
+# Object Detection (for mobile phone detection)
+ultralytics==8.1.0
+
+# Database
+SQLAlchemy==2.0.25
+psycopg2-binary==2.9.9
+
+# Authentication & Security
+PyJWT==2.8.0
+bcrypt==4.1.2
+python-dotenv==1.0.0
+
+# Report Generation
+reportlab==4.0.9
+matplotlib==3.8.2
+pandas==2.1.4
+
+# WebSocket
+python-socketio==5.10.0
+eventlet==0.35.1
+
+# Utilities
+python-dateutil==2.8.2
+pytz==2023.3

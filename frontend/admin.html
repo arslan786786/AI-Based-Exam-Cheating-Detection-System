@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - AI Exam Proctoring</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f6fa;
+        }
+        
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .navbar h1 {
+            font-size: 1.8em;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .tab {
+            padding: 15px 30px;
+            background: white;
+            border: none;
+            border-radius: 5px 5px 0 0;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .section h2 {
+            margin-bottom: 20px;
+            color: #333;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: transform 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>🧑‍💼 Admin Panel</h1>
+        <div>
+            <span id="adminName">Admin</span>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('users')">👥 Users</button>
+            <button class="tab" onclick="showTab('exams')">📝 Exams</button>
+            <button class="tab" onclick="showTab('settings')">⚙️ Settings</button>
+        </div>
+        
+        <!-- Users Tab -->
+        <div id="users" class="tab-content active">
+            <div class="section">
+                <h2>Create New User</h2>
+                <div id="userMessage"></div>
+                
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="newUsername" placeholder="Enter username">
+                </div>
+                
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="newEmail" placeholder="Enter email">
+                </div>
+                
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="newFullName" placeholder="Enter full name">
+                </div>
+                
+                <div class="form-group">
+                    <label>Role</label>
+                    <select id="newRole">
+                        <option value="student">Student</option>
+                        <option value="faculty">Faculty</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="newPassword" placeholder="Enter password">
+                </div>
+                
+                <button class="btn" onclick="createUser()">Create User</button>
+            </div>
+            
+            <div class="section">
+                <h2>All Users</h2>
+                <div id="usersList">Loading...</div>
+            </div>
+        </div>
+        
+        <!-- Exams Tab -->
+        <div id="exams" class="tab-content">
+            <div class="section">
+                <h2>Create New Exam</h2>
+                <div id="examMessage"></div>
+                
+                <div class="form-group">
+                    <label>Exam Title</label>
+                    <input type="text" id="examTitle" placeholder="Enter exam title">
+                </div>
+                
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="examDescription" rows="4" placeholder="Enter exam description"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Duration (minutes)</label>
+                    <input type="number" id="examDuration" placeholder="e.g., 120">
+                </div>
+                
+                <div class="form-group">
+                    <label>Start Time</label>
+                    <input type="datetime-local" id="examStartTime">
+                </div>
+                
+                <div class="form-group">
+                    <label>End Time</label>
+                    <input type="datetime-local" id="examEndTime">
+                </div>
+                
+                <button class="btn" onclick="createExam()">Create Exam</button>
+            </div>
+            
+            <div class="section">
+                <h2>All Exams</h2>
+                <div id="examsList">Loading...</div>
+            </div>
+        </div>
+        
+        <!-- Settings Tab -->
+        <div id="settings" class="tab-content">
+            <div class="section">
+                <h2>Detection Settings</h2>
+                <p>Configure cheating detection thresholds and scoring weights.</p>
+                
+                <h3 style="margin-top: 20px;">Thresholds</h3>
+                <div class="form-group">
+                    <label>Head Turn Angle (degrees)</label>
+                    <input type="number" value="30">
+                </div>
+                
+                <div class="form-group">
+                    <label>Head Turn Duration (seconds)</label>
+                    <input type="number" value="5">
+                </div>
+                
+                <div class="form-group">
+                    <label>Gaze Deviation Threshold</label>
+                    <input type="number" step="0.1" value="0.3">
+                </div>
+                
+                <h3 style="margin-top: 20px;">Scoring Weights</h3>
+                <div class="form-group">
+                    <label>No Face Detected</label>
+                    <input type="number" value="30">
+                </div>
+                
+                <div class="form-group">
+                    <label>Multiple Faces</label>
+                    <input type="number" value="40">
+                </div>
+                
+                <div class="form-group">
+                    <label>Head Movement</label>
+                    <input type="number" value="15">
+                </div>
+                
+                <div class="form-group">
+                    <label>Eye Gaze Deviation</label>
+                    <input type="number" value="10">
+                </div>
+                
+                <div class="form-group">
+                    <label>Mobile Phone Detected</label>
+                    <input type="number" value="50">
+                </div>
+                
+                <button class="btn">Save Settings</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let accessToken = null;
+        const API_URL = 'http://localhost:5000/api';
+        
+        // Auto-login as admin
+        async function autoLogin() {
+            try {
+                const response = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        username: 'admin', 
+                        password: 'admin123' 
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    accessToken = data.access_token;
+                    document.getElementById('adminName').textContent = data.user.full_name;
+                    loadUsers();
+                    loadExams();
+                } else {
+                    alert('Failed to login as admin');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+            }
+        }
+        
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+        
+        async function createUser() {
+            const userData = {
+                username: document.getElementById('newUsername').value,
+                email: document.getElementById('newEmail').value,
+                full_name: document.getElementById('newFullName').value,
+                role: document.getElementById('newRole').value,
+                password: document.getElementById('newPassword').value
+            };
+            
+            try {
+                const response = await fetch(`${API_URL}/auth/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`
+                    },
+                    body: JSON.stringify(userData)
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('userMessage').innerHTML = 
+                        '<div class="alert alert-success">User created successfully!</div>';
+                    loadUsers();
+                    
+                    // Clear form
+                    document.getElementById('newUsername').value = '';
+                    document.getElementById('newEmail').value = '';
+                    document.getElementById('newFullName').value = '';
+                    document.getElementById('newPassword').value = '';
+                } else {
+                    document.getElementById('userMessage').innerHTML = 
+                        `<div class="alert alert-error">Error: ${data.error}</div>`;
+                }
+            } catch (error) {
+                document.getElementById('userMessage').innerHTML = 
+                    `<div class="alert alert-error">Error: ${error.message}</div>`;
+            }
+        }
+        
+        async function loadUsers() {
+            // Note: This would require a new API endpoint to list all users
+            document.getElementById('usersList').innerHTML = 
+                '<p>User listing feature coming soon. Use database directly for now.</p>';
+        }
+        
+        async function createExam() {
+            const examData = {
+                title: document.getElementById('examTitle').value,
+                description: document.getElementById('examDescription').value,
+                duration_minutes: parseInt(document.getElementById('examDuration').value),
+                start_time: document.getElementById('examStartTime').value,
+                end_time: document.getElementById('examEndTime').value
+            };
+            
+            try {
+                const response = await fetch(`${API_URL}/exams`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`
+                    },
+                    body: JSON.stringify(examData)
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('examMessage').innerHTML = 
+                        '<div class="alert alert-success">Exam created successfully!</div>';
+                    loadExams();
+                    
+                    // Clear form
+                    document.getElementById('examTitle').value = '';
+                    document.getElementById('examDescription').value = '';
+                    document.getElementById('examDuration').value = '';
+                } else {
+                    document.getElementById('examMessage').innerHTML = 
+                        `<div class="alert alert-error">Error: ${data.error}</div>`;
+                }
+            } catch (error) {
+                document.getElementById('examMessage').innerHTML = 
+                    `<div class="alert alert-error">Error: ${error.message}</div>`;
+            }
+        }
+        
+        async function loadExams() {
+            try {
+                const response = await fetch(`${API_URL}/exams`, {
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.exams) {
+                    const html = `
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Duration</th>
+                                    <th>Start Time</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${data.exams.map(exam => `
+                                    <tr>
+                                        <td>${exam.title}</td>
+                                        <td>${exam.duration_minutes} min</td>
+                                        <td>${new Date(exam.start_time).toLocaleString()}</td>
+                                        <td>${exam.is_active ? '✅ Active' : '❌ Inactive'}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    `;
+                    document.getElementById('examsList').innerHTML = html;
+                }
+            } catch (error) {
+                console.error('Error loading exams:', error);
+            }
+        }
+        
+        // Initialize
+        autoLogin();
+    </script>
+</body>
+</html>

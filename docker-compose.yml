@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+      - DATABASE_URL=postgresql://exam_user:exam_pass@db:5432/exam_db
+    volumes:
+      - ./uploads:/app/uploads
+      - ./snapshots:/app/snapshots
+      - ./recordings:/app/recordings
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  db:
+    image: postgres:13-alpine
+    environment:
+      - POSTGRES_USER=exam_user
+      - POSTGRES_PASSWORD=exam_pass
+      - POSTGRES_DB=exam_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:

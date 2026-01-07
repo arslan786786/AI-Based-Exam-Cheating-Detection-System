@@ -12,7 +12,7 @@ from datetime import datetime
 sys.path.insert(0, 'src')
 
 import config
-from detectors import FaceDetector, EyeGazeTracker, HeadPoseEstimator, ObjectDetector
+from detectors import FaceDetector, EyeGazeTracker, ObjectDetector
 from utils import AlertSystem, VideoProcessor
 
 
@@ -23,8 +23,7 @@ class ExamMonitor:
         
         # Initialize detectors
         self.face_detector = FaceDetector(config.FACE_DETECTION_CONFIDENCE)
-        self.eye_tracker = EyeGazeTracker(config.EYE_ASPECT_RATIO_THRESHOLD)
-        self.head_pose_estimator = HeadPoseEstimator()
+        self.eye_tracker = EyeGazeTracker()
         self.object_detector = ObjectDetector()
         
         # Initialize utilities

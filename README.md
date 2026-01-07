@@ -53,7 +53,6 @@ Edit `config.py` to customize detection parameters:
 ```python
 # Detection Settings
 FACE_DETECTION_CONFIDENCE = 0.5
-EYE_ASPECT_RATIO_THRESHOLD = 0.25
 HEAD_POSE_THRESHOLD = 30  # degrees
 MULTIPLE_PERSON_ALERT = True
 OBJECT_DETECTION_ENABLED = True
@@ -162,7 +161,6 @@ Screenshots are saved in the `evidence/` directory with timestamps.
 ### Adjusting Sensitivity
 
 - **Face Detection**: Modify `FACE_DETECTION_CONFIDENCE` (0.0-1.0)
-- **Eye Tracking**: Adjust `EYE_ASPECT_RATIO_THRESHOLD`
 - **Head Pose**: Change `HEAD_POSE_THRESHOLD` (degrees)
 
 ### Alert Cooldown

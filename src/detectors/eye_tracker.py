@@ -8,40 +8,14 @@ from typing import Tuple, Optional
 
 
 class EyeGazeTracker:
-    def __init__(self, ear_threshold=0.25):
+    def __init__(self):
         """
         Initialize eye gaze tracker
-        
-        Args:
-            ear_threshold: Eye aspect ratio threshold for blink detection
         """
-        self.ear_threshold = ear_threshold
         self.eye_cascade = cv2.CascadeClassifier(
             cv2.data.haarcascades + 'haarcascade_eye.xml'
         )
         
-    def calculate_eye_aspect_ratio(self, eye_points: np.ndarray) -> float:
-        """
-        Calculate eye aspect ratio (EAR) for blink detection
-        
-        Args:
-            eye_points: Eye landmark points
-            
-        Returns:
-            Eye aspect ratio value
-        """
-        # Compute euclidean distances between vertical eye landmarks
-        vertical_1 = np.linalg.norm(eye_points[1] - eye_points[5])
-        vertical_2 = np.linalg.norm(eye_points[2] - eye_points[4])
-        
-        # Compute euclidean distance between horizontal eye landmarks
-        horizontal = np.linalg.norm(eye_points[0] - eye_points[3])
-        
-        # Calculate EAR
-        ear = (vertical_1 + vertical_2) / (2.0 * horizontal)
-        
-        return ear
-    
     def detect_eyes(self, frame: np.ndarray, face_roi: Tuple) -> Tuple[bool, int]:
         """
         Detect eyes in the face region
@@ -54,6 +28,17 @@ class EyeGazeTracker:
             Tuple of (eyes_detected: bool, num_eyes: int)
         """
         x, y, w, h = face_roi
+        
+        # Validate bounds to prevent IndexError
+        frame_height, frame_width = frame.shape[:2]
+        x = max(0, min(x, frame_width - 1))
+        y = max(0, min(y, frame_height - 1))
+        w = min(w, frame_width - x)
+        h = min(h, frame_height - y)
+        
+        if w <= 0 or h <= 0:
+            return False, 0
+        
         face_region = frame[y:y+h, x:x+w]
         gray_face = cv2.cvtColor(face_region, cv2.COLOR_BGR2GRAY)
         

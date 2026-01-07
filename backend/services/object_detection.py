@@ -19,9 +19,11 @@ class ObjectDetectionService:
         try:
             self.model = YOLO(model_path)
             # Phone-related class IDs in COCO dataset
-            # 67: cell phone, 77: laptop (also suspicious)
-            self.phone_classes = [67]
-            self.suspicious_classes = [67, 77]  # cell phone, laptop
+            # COCO class names: https://github.com/ultralytics/ultralytics/blob/main/ultralytics/cfg/datasets/coco.yaml
+            self.COCO_CELL_PHONE = 67  # cell phone
+            self.COCO_LAPTOP = 77  # laptop (also suspicious during exam)
+            self.phone_classes = [self.COCO_CELL_PHONE]
+            self.suspicious_classes = [self.COCO_CELL_PHONE, self.COCO_LAPTOP]
         except Exception as e:
             print(f"Error loading YOLO model: {e}")
             self.model = None

@@ -219,8 +219,14 @@ class FaceDetectionService:
         ], axis=0)
         
         # Pupil approximation (using iris landmarks if available)
-        left_iris = [landmarks.landmark[468].x * w, landmarks.landmark[468].y * h]
-        right_iris = [landmarks.landmark[473].x * w, landmarks.landmark[473].y * h]
+        # Check if iris landmarks exist (MediaPipe face mesh with iris refinement has 478 landmarks)
+        if len(landmarks.landmark) > 473:
+            left_iris = [landmarks.landmark[468].x * w, landmarks.landmark[468].y * h]
+            right_iris = [landmarks.landmark[473].x * w, landmarks.landmark[473].y * h]
+        else:
+            # Fall back to eye center if iris landmarks not available
+            left_iris = left_eye_center
+            right_iris = right_eye_center
         
         # Calculate gaze deviation from center
         left_deviation = np.linalg.norm(left_iris - left_eye_center)

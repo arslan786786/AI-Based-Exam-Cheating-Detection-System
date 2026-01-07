@@ -206,11 +206,14 @@ class CheatingDetectionService:
         looking_away = gaze_result.get('looking_away', False)
         deviation = gaze_result.get('deviation', 0)
         
+        # Configurable threshold for consecutive gaze deviations
+        GAZE_DEVIATION_COUNT_THRESHOLD = 5
+        
         if looking_away or deviation > self.gaze_deviation_threshold:
             state['gaze_deviation_count'] += 1
             
             # Trigger event for frequent gaze deviations
-            if state['gaze_deviation_count'] >= 5:  # 5 consecutive deviations
+            if state['gaze_deviation_count'] >= GAZE_DEVIATION_COUNT_THRESHOLD:
                 events.append({
                     'event_type': 'gaze_deviation',
                     'score': self.score_eye_gaze,

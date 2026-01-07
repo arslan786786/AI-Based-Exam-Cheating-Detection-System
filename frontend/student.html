@@ -273,6 +273,7 @@
         </div>
     </div>
     
+    <script src="config.js"></script>
     <script>
         let accessToken = null;
         let sessionId = null;
@@ -281,7 +282,8 @@
         let durationInterval = null;
         let startTime = null;
         
-        const API_URL = 'http://localhost:5000/api';
+        // Use configuration for API URL
+        const API_URL = Config.getApiUrl();
         
         async function login() {
             const username = document.getElementById('username').value;

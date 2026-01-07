@@ -306,9 +306,11 @@
         </div>
     </div>
     
+    <script src="config.js"></script>
     <script>
         let accessToken = null;
-        const API_URL = 'http://localhost:5000/api';
+        // Use configuration for API URL
+        const API_URL = Config.getApiUrl();
         
         // Auto-login as admin
         async function autoLogin() {

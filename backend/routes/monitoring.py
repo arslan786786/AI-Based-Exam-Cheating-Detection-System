@@ -176,10 +176,12 @@ def log_event():
         # Update session score and risk level
         session.total_cheating_score += data['score']
         
-        # Determine risk level
-        if session.total_cheating_score >= 100:
+        # Determine risk level using config thresholds
+        from flask import current_app
+        config = current_app.config
+        if session.total_cheating_score >= config['RISK_HIGH_THRESHOLD']:
             session.risk_level = 'high'
-        elif session.total_cheating_score >= 60:
+        elif session.total_cheating_score >= config['RISK_MEDIUM_THRESHOLD']:
             session.risk_level = 'medium'
         else:
             session.risk_level = 'low'
